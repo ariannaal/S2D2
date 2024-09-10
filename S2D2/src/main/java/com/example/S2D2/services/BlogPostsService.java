@@ -13,12 +13,12 @@ public class BlogPostsService {
     private List<BlogPost> blogPostsList = new ArrayList<>();
 
     // ritorna tutti i post
-    public List<BlogPost> getAllBlogPosts(){
+    public List<BlogPost> getAllBlogPosts() {
         return this.blogPostsList;
     }
 
     // salva i post
-    public BlogPost savePost(BlogPost post){
+    public BlogPost savePost(BlogPost post) {
         Random rndm = new Random();
         post.setId(rndm.nextInt(1, 10000));
         this.blogPostsList.add(post);
@@ -26,16 +26,12 @@ public class BlogPostsService {
     }
 
     // ritorna il post con un certo id
-    public BlogPost findById(int blogPostId){
-        BlogPost found = null;
-        for (BlogPost post : this.blogPostsList){
-            if(post.getId() == blogPostId) found = post;
+    public BlogPost findById(int blogPostId) {
+        for (BlogPost post : blogPostsList) {
+            if (post.getId() == blogPostId) {
+                return post;
+            }
         }
-        if (found == null )
-            System.out.println("Nessun post trovato con questo id");
-        return found;
+        return null;
     }
-
-
-
 }

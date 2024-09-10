@@ -21,6 +21,12 @@ public class BlogPostController {
         return blogPostService.getAllBlogPosts();
     }
 
+    // http://localhost:3001/blogposts / {id}
+    @GetMapping("/{id}")
+    private BlogPost getSinglePost(@PathVariable int id){
+        return blogPostService.findById(id);
+    }
+
     // 2. POST http://localhost:3001/blogposts (+ post)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
