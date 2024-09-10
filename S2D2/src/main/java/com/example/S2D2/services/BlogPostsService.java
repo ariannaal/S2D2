@@ -48,5 +48,13 @@ public class BlogPostsService {
         return null;
     }
 
+    // elimina lo specifico post
+    public void deletePost(int id) {
+        for (BlogPost post : blogPostsList) {
+            if (post.getId() == id) {
+                this.blogPostsList.remove(post);
+            }
+        }
+    }
 
 }

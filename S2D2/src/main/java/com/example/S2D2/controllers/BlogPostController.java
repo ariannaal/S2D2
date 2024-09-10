@@ -40,4 +40,12 @@ public class BlogPostController {
         return blogPostService.findAndUpdate(id, post);
     }
 
+    //DELETE /blogPosts /123 => cancella lo specifico blog post
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private void deletePost(@PathVariable int id){
+        blogPostService.deletePost(id);
+    }
+
+
 }
