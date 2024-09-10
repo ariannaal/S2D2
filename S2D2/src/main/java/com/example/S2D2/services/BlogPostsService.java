@@ -36,17 +36,6 @@ public class BlogPostsService {
         return found;
     }
 
-//    public User findByIdAndUpdate(int userId, User updatedUser){
-//        User found = null;
-//        for (User user: this.usersList){
-//            if(user.getId() == userId) {
-//                found = user;
-//                found.setName(updatedUser.getName());
-//                found.setSurname(updatedUser.getSurname());
-//            }
-//        }
-//        if (found == null ) throw new NotFoundException(userId);
-//        return found;
-//    }
+
 
 }
