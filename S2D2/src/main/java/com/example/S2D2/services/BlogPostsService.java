@@ -34,4 +34,19 @@ public class BlogPostsService {
         }
         return null;
     }
+
+    // modifica lo specifico blog post
+    public BlogPost findAndUpdate(int id, BlogPost newPost) {
+        for (BlogPost post : blogPostsList) {
+            if (post.getId() == id) {
+
+                post.setContenuto(newPost.getContenuto());
+
+                return post;
+            }
+        }
+        return null;
+    }
+
+
 }

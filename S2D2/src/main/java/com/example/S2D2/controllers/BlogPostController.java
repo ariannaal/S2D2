@@ -33,4 +33,11 @@ public class BlogPostController {
     private BlogPost createPost(@RequestBody BlogPost post){
         return blogPostService.savePost(post);
     }
+
+    //PUT /blogPosts /123 => modifica lo specifico blog post
+    @PutMapping("/{id}")
+    private BlogPost findAndUpdatePost(@PathVariable int id, @RequestBody BlogPost post){
+        return blogPostService.findAndUpdate(id, post);
+    }
+
 }
