@@ -9,7 +9,6 @@ import java.util.UUID;
 public class Autore {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nome;
     private String cognome;
@@ -17,6 +16,10 @@ public class Autore {
     private String dataDiNascita;
     private String avatar;
 
+
+    public Autore(){
+
+    }
     public Autore(String nome, String cognome, String email, String dataDiNascita, String avatar) {
         this.nome = nome;
         this.cognome = cognome;

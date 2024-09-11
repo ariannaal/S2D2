@@ -1,6 +1,8 @@
 package com.example.S2D2.services;
 
 import com.example.S2D2.entities.Autore;
+import com.example.S2D2.exceptions.BadRequestException;
+import com.example.S2D2.exceptions.NotFoundException;
 import com.example.S2D2.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,15 +27,18 @@ public class AuthorService {
 
     // salva gli autori
     public Autore saveAuthor(Autore autore) {
+        if (autore == null) {
+            throw new BadRequestException("Autore non può essere null");
+        }
         return authorRepository.save(autore);
     }
 
 
     // ritorna un autore con un certo id
-    public Optional<Autore> findById(int id) {
-        return authorRepository.findById(id);
+    public Autore findById(int id) {
+        return authorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(id));
     }
-
     // modifica lo specifico autore
     public Autore findAuthorAndUpdate(int id, Autore nuovoAutore) {
         for (Autore autore : AuthorList) {

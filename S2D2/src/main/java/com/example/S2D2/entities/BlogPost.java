@@ -22,6 +22,9 @@ public class BlogPost {
     @JoinColumn(name = "author_id")
     private Autore autoreId;
 
+    public BlogPost(){
+
+    }
     public BlogPost(String categoria, String titolo, String cover, String contenuto, int tempoDiLettura, Autore autoreId) {
         this.categoria = categoria;
         this.titolo = titolo;

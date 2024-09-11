@@ -1,9 +1,14 @@
 package com.example.S2D2.services;
 
 import com.example.S2D2.entities.BlogPost;
+import com.example.S2D2.exceptions.NotFoundException;
 import com.example.S2D2.repositories.BlogPostRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,9 +35,11 @@ public class BlogPostsService {
     }
 
     // ritorna il post con un certo id
-    public Optional<BlogPost> findById(int blogPostId) {
-      return this.blogRepository.findById(blogPostId);
+    public BlogPost findById(int blogPostId) {
+        return this.blogRepository.findById(blogPostId)
+                .orElseThrow(() -> new NotFoundException(blogPostId));
     }
+
 
     // modifica lo specifico blog post
     public BlogPost findAndUpdate(int id, BlogPost newPost) {
@@ -49,7 +56,6 @@ public class BlogPostsService {
 
             return blogRepository.save(existingPost);
         } else {
-            // Gestisci il caso in cui il post non esiste
             return null;
         }
     }
@@ -59,6 +65,12 @@ public class BlogPostsService {
     public void deletePost(int id) {
 
         this.blogRepository.deleteById(id);
+    }
+
+    public Page<BlogPost> findAll(int page, int size, String sortBy) {
+        if (page > 20) {page = 20;}
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return blogRepository.findAll(pageable);
     }
 
 }
