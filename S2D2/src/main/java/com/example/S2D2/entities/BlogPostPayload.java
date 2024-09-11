@@ -1,41 +1,21 @@
 package com.example.S2D2.entities;
 
-import jakarta.persistence.*;
+public class BlogPostPayload {
 
-import java.util.UUID;
-
-@Entity
-@Table(name = "blogposts")
-public class BlogPost {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     private String categoria;
     private String titolo;
     private String cover;
     private String contenuto;
     private int tempoDiLettura;
+    private int author_id;
 
-    // relazione unidirezionale Many-to-One verso Autore
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    private Autore autore;
-
-    public BlogPost(){
-
-    }
-    public BlogPost(String categoria, String titolo, String cover, String contenuto, int tempoDiLettura, Autore autore) {
+    public BlogPostPayload(String categoria, String titolo, String cover, String contenuto, int tempoDiLettura, int author_id) {
         this.categoria = categoria;
         this.titolo = titolo;
         this.cover = cover;
         this.contenuto = contenuto;
         this.tempoDiLettura = tempoDiLettura;
-        this.autore=autore;
-    }
-
-    public int getId() {
-        return id;
+        this.author_id = author_id;
     }
 
     public String getCategoria() {
@@ -78,11 +58,11 @@ public class BlogPost {
         this.tempoDiLettura = tempoDiLettura;
     }
 
-    public Autore getAutore() {
-        return autore;
+    public int getAuthor_id() {
+        return author_id;
     }
 
-    public void setAutore(Autore autore) {
-        this.autore = autore;
+    public void setAuthor_id(int author_id) {
+        this.author_id = author_id;
     }
 }

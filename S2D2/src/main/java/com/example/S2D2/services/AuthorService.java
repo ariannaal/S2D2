@@ -27,18 +27,19 @@ public class AuthorService {
 
     // salva gli autori
     public Autore saveAuthor(Autore autore) {
-        if (autore == null) {
-            throw new BadRequestException("Autore non può essere null");
+        if (this.authorRepository.existsByEmail(autore.getEmail())) {
+            throw new BadRequestException("L'email " + autore.getEmail() + " è già in uso!");
+        } else {
+            autore.setAvatar("https://ui-avatars.com/api/?name="+autore.getNome()+"+"+autore.getCognome());
         }
-        return authorRepository.save(autore);
+        return this.authorRepository.save(autore);
     }
-
 
     // ritorna un autore con un certo id
-    public Autore findById(int id) {
-        return authorRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(id));
-    }
+//    public Autore findById(int id) {
+//        return authorRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException(id));
+//    }
     // modifica lo specifico autore
     public Autore findAuthorAndUpdate(int id, Autore nuovoAutore) {
         for (Autore autore : AuthorList) {

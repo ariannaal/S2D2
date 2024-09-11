@@ -1,7 +1,10 @@
 package com.example.S2D2.services;
 
+import com.example.S2D2.entities.Autore;
 import com.example.S2D2.entities.BlogPost;
+import com.example.S2D2.entities.BlogPostPayload;
 import com.example.S2D2.exceptions.NotFoundException;
+import com.example.S2D2.repositories.AuthorRepository;
 import com.example.S2D2.repositories.BlogPostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,59 +21,79 @@ public class BlogPostsService {
     @Autowired
     private BlogPostRepository blogRepository;
 
+    @Autowired
+    private AuthorRepository authorRepository;
+
     // ritorna tutti i post
     public List<BlogPost> getAllBlogPosts() {
         return this.blogRepository.findAll();
     }
 
     // salva i post
-    public BlogPost savePost(BlogPost post) {
-        try {
-            this.blogRepository.save(post);
-        } catch(Exception e){
-            System.out.println(e.getMessage());
-        }
+    public BlogPost savePost(BlogPostPayload payload) {
 
-        return post;
+        Autore author = authorRepository.findById(payload.getAuthor_id())
+                .orElseThrow(() -> new NotFoundException("Author not found with ID: " + payload.getAuthor_id()));
+
+        BlogPost newBlogPost = new BlogPost(
+                payload.getCategoria(),
+                payload.getTitolo(),
+                payload.getCover(),
+                payload.getContenuto(),
+                payload.getTempoDiLettura(),
+                author
+        );
+
+        return blogRepository.save(newBlogPost);
     }
 
-    // ritorna il post con un certo id
     public BlogPost findById(int blogPostId) {
         return this.blogRepository.findById(blogPostId)
-                .orElseThrow(() -> new NotFoundException(blogPostId));
+                .orElseThrow(() -> new NotFoundException("BlogPost not found with ID: " + blogPostId));
     }
 
+        // modifica lo specifico blog post
+        public BlogPost findAndUpdate(int id, BlogPostPayload payload) {
+            Optional<BlogPost> existingPostOpt = blogRepository.findById(id);
+            if (existingPostOpt.isPresent()) {
+                BlogPost existingPost = existingPostOpt.get();
 
-    // modifica lo specifico blog post
-    public BlogPost findAndUpdate(int id, BlogPost newPost) {
-        Optional<BlogPost> existingPostOpt = blogRepository.findById(id);
-        if (existingPostOpt.isPresent()) {
-            BlogPost existingPost = existingPostOpt.get();
+                existingPost.setCategoria(payload.getCategoria());
+                existingPost.setTitolo(payload.getTitolo());
+                existingPost.setCover(payload.getCover());
+                existingPost.setContenuto(payload.getContenuto());
+                existingPost.setTempoDiLettura(payload.getTempoDiLettura());
 
-            existingPost.setCategoria(newPost.getCategoria());
-            existingPost.setTitolo(newPost.getTitolo());
-            existingPost.setCover(newPost.getCover());
-            existingPost.setContenuto(newPost.getContenuto());
-            existingPost.setTempoDiLettura(newPost.getTempoDiLettura());
-            existingPost.setAutoreId(newPost.getAutoreId());
+                Autore author = authorRepository.findById(payload.getAuthor_id())
+                        .orElseThrow(() -> new NotFoundException("Author not found with ID: " + payload.getAuthor_id()));
 
-            return blogRepository.save(existingPost);
-        } else {
-            return null;
+                existingPost.setAutore(author);
+
+                return blogRepository.save(existingPost);
+            } else {
+                throw new NotFoundException("BlogPost not found with ID: " + id);
+            }
+        }
+
+
+        // elimina lo specifico post
+        public void deletePost(int id) {
+            if (!blogRepository.existsById(id)) {
+                throw new NotFoundException("BlogPost not found with ID: " + id);
+            }
+            blogRepository.deleteById(id);
+        }
+
+        // Trova tutti i post con paginazione e ordinamento
+        public Page<BlogPost> findAll ( int page, int size, String sortBy){
+            if (page < 0) {
+                page = 0;
+            }
+            if (size <= 0) {
+                size = 10;
+            }
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+            return blogRepository.findAll(pageable);
         }
     }
 
-
-    // elimina lo specifico post
-    public void deletePost(int id) {
-
-        this.blogRepository.deleteById(id);
-    }
-
-    public Page<BlogPost> findAll(int page, int size, String sortBy) {
-        if (page > 20) {page = 20;}
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return blogRepository.findAll(pageable);
-    }
-
-}
