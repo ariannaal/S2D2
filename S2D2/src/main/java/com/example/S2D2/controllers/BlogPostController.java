@@ -4,6 +4,7 @@ import com.example.S2D2.entities.BlogPost;
 import com.example.S2D2.services.BlogPostsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,22 +23,27 @@ public class BlogPostController {
     }
 
     // http://localhost:3001/blogposts / {id}
-    @GetMapping("/{id}")
-    private BlogPost getSinglePost(@PathVariable int id){
-        return blogPostService.findById(id);
-    }
+//    @GetMapping("/{id}")
+//    private BlogPost getSinglePost(@PathVariable int id){
+//        return blogPostService.findById(id);
+//    }
 
     // 2. POST http://localhost:3001/blogposts (+ post)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private BlogPost createPost(@RequestBody BlogPost post){
+    public BlogPost createPost(@RequestBody BlogPost post){
         return blogPostService.savePost(post);
     }
 
-    //PUT /blogPosts /123 => modifica lo specifico blog post
+    // PUT /blogposts/{id} => modifica lo specifico blog post
     @PutMapping("/{id}")
-    private BlogPost findAndUpdatePost(@PathVariable int id, @RequestBody BlogPost post){
-        return blogPostService.findAndUpdate(id, post);
+    public ResponseEntity<BlogPost> findAndUpdatePost(@PathVariable int id, @RequestBody BlogPost post) {
+        BlogPost updatedPost = blogPostService.findAndUpdate(id, post);
+        if (updatedPost != null) {
+            return ResponseEntity.ok(updatedPost);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     //DELETE /blogPosts /123 => cancella lo specifico blog post

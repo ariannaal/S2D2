@@ -19,16 +19,16 @@ public class BlogPost {
 
     // relazione unidirezionale Many-to-One verso Autore
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
-    private Autore autore;
+    @JoinColumn(name = "author_id")
+    private Autore autoreId;
 
-    public BlogPost(String categoria, String titolo, String cover, String contenuto, int tempoDiLettura, Autore autore) {
+    public BlogPost(String categoria, String titolo, String cover, String contenuto, int tempoDiLettura, Autore autoreId) {
         this.categoria = categoria;
         this.titolo = titolo;
         this.cover = cover;
         this.contenuto = contenuto;
         this.tempoDiLettura = tempoDiLettura;
-        this.autore=autore;
+        this.autoreId=autoreId;
     }
 
     public int getId() {
@@ -75,11 +75,11 @@ public class BlogPost {
         this.tempoDiLettura = tempoDiLettura;
     }
 
-    public Autore getAutore() {
-        return autore;
+    public Autore getAutoreId() {
+        return autoreId;
     }
 
-    public void setAutore(Autore autore) {
-        this.autore = autore;
+    public void setAutoreId(Autore autoreId) {
+        this.autoreId = autoreId;
     }
 }

@@ -23,10 +23,10 @@ public class AuthorController {
     }
 
     // http://localhost:3001/authors / {id}
-    @GetMapping("/{id}")
-    private Autore getSingleAuthor(@PathVariable int id){
-        return authorService.findAuthorById(id);
-    }
+//    @GetMapping("/{id}")
+//    private Autore getSingleAuthor(@PathVariable int id){
+//        return authorService.findAuthorById(id);
+//    }
 
     // 2. POST http://localhost:3001/authors (+ post)
     @PostMapping

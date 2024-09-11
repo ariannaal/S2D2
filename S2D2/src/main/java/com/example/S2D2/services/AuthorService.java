@@ -1,16 +1,22 @@
 package com.example.S2D2.services;
 
 import com.example.S2D2.entities.Autore;
+import com.example.S2D2.repositories.AuthorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
 public class AuthorService {
 
     private List<Autore> AuthorList = new ArrayList<>();
+
+    @Autowired
+    private AuthorRepository authorRepository;
 
     // ritorna tutti gli autori
     public List<Autore> getAllAuthors() {
@@ -19,18 +25,13 @@ public class AuthorService {
 
     // salva gli autori
     public Autore saveAuthor(Autore autore) {
-        this.AuthorList.add(autore);
-        return autore;
+        return authorRepository.save(autore);
     }
 
+
     // ritorna un autore con un certo id
-    public Autore findAuthorById(int id) {
-        for (Autore autore : AuthorList) {
-            if (autore.getId() == id) {
-                return autore;
-            }
-        }
-        return null;
+    public Optional<Autore> findById(int id) {
+        return authorRepository.findById(id);
     }
 
     // modifica lo specifico autore

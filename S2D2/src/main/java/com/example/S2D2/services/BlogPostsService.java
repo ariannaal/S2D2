@@ -1,58 +1,64 @@
 package com.example.S2D2.services;
 
 import com.example.S2D2.entities.BlogPost;
+import com.example.S2D2.repositories.BlogPostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 
 @Service
 public class BlogPostsService {
-
-    private List<BlogPost> blogPostsList = new ArrayList<>();
+    @Autowired
+    private BlogPostRepository blogRepository;
 
     // ritorna tutti i post
     public List<BlogPost> getAllBlogPosts() {
-        return this.blogPostsList;
+        return this.blogRepository.findAll();
     }
 
     // salva i post
     public BlogPost savePost(BlogPost post) {
-        this.blogPostsList.add(post);
+        try {
+            this.blogRepository.save(post);
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+
         return post;
     }
 
     // ritorna il post con un certo id
-    public BlogPost findById(int blogPostId) {
-        for (BlogPost post : blogPostsList) {
-            if (post.getId() == blogPostId) {
-                return post;
-            }
-        }
-        return null;
+    public Optional<BlogPost> findById(int blogPostId) {
+      return this.blogRepository.findById(blogPostId);
     }
 
     // modifica lo specifico blog post
     public BlogPost findAndUpdate(int id, BlogPost newPost) {
-        for (BlogPost post : blogPostsList) {
-            if (post.getId() == id) {
+        Optional<BlogPost> existingPostOpt = blogRepository.findById(id);
+        if (existingPostOpt.isPresent()) {
+            BlogPost existingPost = existingPostOpt.get();
 
-                post.setContenuto(newPost.getContenuto());
+            existingPost.setCategoria(newPost.getCategoria());
+            existingPost.setTitolo(newPost.getTitolo());
+            existingPost.setCover(newPost.getCover());
+            existingPost.setContenuto(newPost.getContenuto());
+            existingPost.setTempoDiLettura(newPost.getTempoDiLettura());
+            existingPost.setAutoreId(newPost.getAutoreId());
 
-                return post;
-            }
+            return blogRepository.save(existingPost);
+        } else {
+            // Gestisci il caso in cui il post non esiste
+            return null;
         }
-        return null;
     }
+
 
     // elimina lo specifico post
     public void deletePost(int id) {
-        for (BlogPost post : blogPostsList) {
-            if (post.getId() == id) {
-                this.blogPostsList.remove(post);
-            }
-        }
+
+        this.blogRepository.deleteById(id);
     }
 
 }
