@@ -19,8 +19,6 @@ public class BlogPostsService {
 
     // salva i post
     public BlogPost savePost(BlogPost post) {
-        Random rndm = new Random();
-        post.setId(rndm.nextInt(1, 10000));
         this.blogPostsList.add(post);
         return post;
     }

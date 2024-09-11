@@ -1,7 +1,15 @@
 package com.example.S2D2.entities;
 
+import jakarta.persistence.*;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "blogposts")
 public class BlogPost {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String categoria;
     private String titolo;
@@ -9,21 +17,22 @@ public class BlogPost {
     private String contenuto;
     private int tempoDiLettura;
 
-    public BlogPost(int id, String categoria, String titolo, String cover, String contenuto, int tempoDiLettura) {
-        this.id = id;
+    // relazione unidirezionale Many-to-One verso Autore
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private Autore autore;
+
+    public BlogPost(String categoria, String titolo, String cover, String contenuto, int tempoDiLettura, Autore autore) {
         this.categoria = categoria;
         this.titolo = titolo;
         this.cover = cover;
         this.contenuto = contenuto;
         this.tempoDiLettura = tempoDiLettura;
+        this.autore=autore;
     }
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getCategoria() {
@@ -64,5 +73,13 @@ public class BlogPost {
 
     public void setTempoDiLettura(int tempoDiLettura) {
         this.tempoDiLettura = tempoDiLettura;
+    }
+
+    public Autore getAutore() {
+        return autore;
+    }
+
+    public void setAutore(Autore autore) {
+        this.autore = autore;
     }
 }

@@ -1,12 +1,13 @@
 package com.example.S2D2.services;
 
 import com.example.S2D2.entities.Autore;
-import com.example.S2D2.entities.BlogPost;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+@Service
 public class AuthorService {
 
     private List<Autore> AuthorList = new ArrayList<>();

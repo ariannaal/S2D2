@@ -1,7 +1,15 @@
 package com.example.S2D2.entities;
 
+import jakarta.persistence.*;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "authors")
 public class Autore {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nome;
     private String cognome;
@@ -9,8 +17,7 @@ public class Autore {
     private String dataDiNascita;
     private String avatar;
 
-    public Autore(int id, String nome, String cognome, String email, String dataDiNascita, String avatar) {
-        this.id = id;
+    public Autore(String nome, String cognome, String email, String dataDiNascita, String avatar) {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
@@ -20,10 +27,6 @@ public class Autore {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNome() {
