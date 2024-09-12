@@ -111,6 +111,7 @@ public class BlogPostsService {
 
             Map<String, Object> uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
             String immagineCover = uploadResult.get("url").toString();
+            System.out.println("URL: " + immagineCover);
 
             blogPost.setCover(immagineCover);
             blogRepository.save(blogPost);
