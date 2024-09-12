@@ -1,5 +1,7 @@
 package com.example.S2D2.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.S2D2.entities.Autore;
 import com.example.S2D2.entities.BlogPost;
 import com.example.S2D2.entities.BlogPostPayload;
@@ -13,8 +15,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,6 +29,9 @@ public class BlogPostsService {
 
     @Autowired
     private AuthorRepository authorRepository;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     // ritorna tutti i post
     public List<BlogPost> getAllBlogPosts() {
@@ -94,6 +102,18 @@ public class BlogPostsService {
             }
             Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
             return blogRepository.findAll(pageable);
+        }
+
+        //upload cover
+        public void uploadImage(int blogPostId, MultipartFile image) throws IOException {
+            BlogPost blogPost = blogRepository.findById(blogPostId)
+                    .orElseThrow(() -> new NotFoundException("Post con id " + blogPostId + " non trovato."));
+
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
+            String immagineCover = uploadResult.get("url").toString();
+
+            blogPost.setCover(immagineCover);
+            blogRepository.save(blogPost);
         }
     }
 
