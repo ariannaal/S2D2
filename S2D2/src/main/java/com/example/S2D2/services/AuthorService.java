@@ -3,6 +3,7 @@ package com.example.S2D2.services;
 import com.example.S2D2.entities.Autore;
 import com.example.S2D2.exceptions.BadRequestException;
 import com.example.S2D2.exceptions.NotFoundException;
+import com.example.S2D2.payloads.NewAuthorDTO;
 import com.example.S2D2.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,20 +27,26 @@ public class AuthorService {
     }
 
     // salva gli autori
-    public Autore saveAuthor(Autore autore) {
-        if (this.authorRepository.existsByEmail(autore.getEmail())) {
-            throw new BadRequestException("L'email " + autore.getEmail() + " è già in uso!");
-        } else {
-            autore.setAvatar("https://ui-avatars.com/api/?name="+autore.getNome()+"+"+autore.getCognome());
-        }
-        return this.authorRepository.save(autore);
+    public Autore save(NewAuthorDTO body) {
+        // Check if the email is already used
+        authorRepository.findByEmail(body.email()).ifPresent(user -> {
+            throw new BadRequestException("L'email " + body.email() + " è già stata utilizzata");
+        });
+
+        Autore newAuthor = new Autore();
+        newAuthor.setNome(body.nome());
+        newAuthor.setCognome(body.cognome());
+        newAuthor.setEmail(body.email());
+        newAuthor.setDataDiNascita(String.valueOf(body.dataDiNascita()));
+        newAuthor.setAvatar("https://ui-avatars.com/api/?name=" + body.nome().charAt(0) + "+" + body.cognome().charAt(0));
+
+        return authorRepository.save(newAuthor);
+    }
+    // ritorna un autore con un certo id
+    public Autore findById(String id){
+        return this.authorRepository.findById(Integer.parseInt(id)).orElseThrow(() -> new NotFoundException(id));
     }
 
-    // ritorna un autore con un certo id
-//    public Autore findById(int id) {
-//        return authorRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(id));
-//    }
     // modifica lo specifico autore
     public Autore findAuthorAndUpdate(int id, Autore nuovoAutore) {
         for (Autore autore : AuthorList) {
