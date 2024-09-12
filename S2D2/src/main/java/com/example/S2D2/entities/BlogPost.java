@@ -25,6 +25,7 @@ public class BlogPost {
     public BlogPost(){
 
     }
+
     public BlogPost(String categoria, String titolo, String cover, String contenuto, int tempoDiLettura, Autore autore) {
         this.categoria = categoria;
         this.titolo = titolo;

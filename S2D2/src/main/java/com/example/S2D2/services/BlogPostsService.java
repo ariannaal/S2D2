@@ -4,6 +4,7 @@ import com.example.S2D2.entities.Autore;
 import com.example.S2D2.entities.BlogPost;
 import com.example.S2D2.entities.BlogPostPayload;
 import com.example.S2D2.exceptions.NotFoundException;
+import com.example.S2D2.payloads.NewBlogPostDTO;
 import com.example.S2D2.repositories.AuthorRepository;
 import com.example.S2D2.repositories.BlogPostRepository;
 import org.springframework.data.domain.Page;
@@ -30,19 +31,18 @@ public class BlogPostsService {
     }
 
     // salva i post
-    public BlogPost savePost(BlogPostPayload payload) {
+    public BlogPost savePost(NewBlogPostDTO payload) {
 
-        Autore author = authorRepository.findById(payload.getAuthor_id())
-                .orElseThrow(() -> new NotFoundException("Author not found with ID: " + payload.getAuthor_id()));
+        Autore author = authorRepository.findById(payload.author_id())
+                .orElseThrow(() -> new NotFoundException("Author not found with ID: " + payload.author_id()));
 
-        BlogPost newBlogPost = new BlogPost(
-                payload.getCategoria(),
-                payload.getTitolo(),
-                payload.getCover(),
-                payload.getContenuto(),
-                payload.getTempoDiLettura(),
-                author
-        );
+        BlogPost newBlogPost = new BlogPost();
+        newBlogPost.setTempoDiLettura(payload.tempoDiLettura());
+        newBlogPost.setContenuto(payload.contenuto());
+        newBlogPost.setTitolo(payload.titolo());
+        newBlogPost.setAutore(author);
+        newBlogPost.setCategoria(payload.categoria());
+        newBlogPost.setCover("http://picsum.photos/200/300");
 
         return blogRepository.save(newBlogPost);
     }
@@ -53,27 +53,27 @@ public class BlogPostsService {
     }
 
         // modifica lo specifico blog post
-        public BlogPost findAndUpdate(int id, BlogPostPayload payload) {
-            Optional<BlogPost> existingPostOpt = blogRepository.findById(id);
-            if (existingPostOpt.isPresent()) {
-                BlogPost existingPost = existingPostOpt.get();
-
-                existingPost.setCategoria(payload.getCategoria());
-                existingPost.setTitolo(payload.getTitolo());
-                existingPost.setCover(payload.getCover());
-                existingPost.setContenuto(payload.getContenuto());
-                existingPost.setTempoDiLettura(payload.getTempoDiLettura());
-
-                Autore author = authorRepository.findById(payload.getAuthor_id())
-                        .orElseThrow(() -> new NotFoundException("Author not found with ID: " + payload.getAuthor_id()));
-
-                existingPost.setAutore(author);
-
-                return blogRepository.save(existingPost);
-            } else {
-                throw new NotFoundException("BlogPost not found with ID: " + id);
-            }
-        }
+//        public BlogPost findAndUpdate(int id, BlogPostPayload payload) {
+//            Optional<BlogPost> existingPostOpt = blogRepository.findById(id);
+//            if (existingPostOpt.isPresent()) {
+//                BlogPost existingPost = existingPostOpt.get();
+//
+//                existingPost.setCategoria(payload.getCategoria());
+//                existingPost.setTitolo(payload.getTitolo());
+//                existingPost.setCover(payload.get);
+//                existingPost.setContenuto(payload.getContenuto());
+//                existingPost.setTempoDiLettura(payload.getTempoDiLettura());
+//
+//                Autore author = authorRepository.findById(payload.getAuthor_id())
+//                        .orElseThrow(() -> new NotFoundException("Author not found with ID: " + payload.getAuthor_id()));
+//
+//                existingPost.setAutore(author);
+//
+//                return blogRepository.save(existingPost);
+//            } else {
+//                throw new NotFoundException("BlogPost not found with ID: " + id);
+//            }
+//        }
 
 
         // elimina lo specifico post
